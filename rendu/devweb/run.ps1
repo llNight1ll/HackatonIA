@@ -14,7 +14,7 @@ function Initialize-Venv {
     }
 
     if (-not (Test-VenvReady)) {
-        Write-Host "Creation de l'environnement virtuel Python..."
+        Write-Host "Creation de l environnement virtuel Python..."
         $pythonCmd = Get-Command python -ErrorAction SilentlyContinue
         if (-not $pythonCmd) {
             throw "Python introuvable. Installez Python 3.10+ et ajoutez-le au PATH."
@@ -37,6 +37,10 @@ if (-not (Test-Path ".env")) {
 
 Write-Host "Build du frontend React..."
 Set-Location frontend
+if (-not (Test-Path ".env")) {
+    Copy-Item .env.example .env
+    Write-Host "frontend/.env cree depuis .env.example - renseignez vos cles Supabase"
+}
 if (-not (Test-Path "node_modules")) {
     npm install
 }

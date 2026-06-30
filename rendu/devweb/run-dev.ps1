@@ -38,6 +38,10 @@ Write-Host ""
 Start-Process -FilePath $venvPython -ArgumentList "-m", "app.main" -WorkingDirectory $PSScriptRoot
 
 Set-Location frontend
+if (-not (Test-Path ".env")) {
+    Copy-Item .env.example .env
+    Write-Host "frontend/.env cree depuis .env.example - renseignez vos cles Supabase"
+}
 if (-not (Test-Path "node_modules")) {
     npm install
 }

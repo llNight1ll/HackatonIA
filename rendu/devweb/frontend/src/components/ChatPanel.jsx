@@ -10,6 +10,7 @@ export default function ChatPanel({
   onSubmit,
   canSend,
   isGenerating,
+  loadingMessages = false,
 }) {
   const messagesRef = useRef(null);
 
@@ -35,7 +36,10 @@ export default function ChatPanel({
       </header>
 
       <section className="messages" ref={messagesRef} aria-label="Conversation">
-        {messages.map((message, index) => (
+        {loadingMessages && (
+          <p className="messages__loading">Chargement de la conversation…</p>
+        )}
+        {!loadingMessages && messages.map((message, index) => (
           <MessageBubble
             key={index}
             role={message.role}
@@ -49,7 +53,7 @@ export default function ChatPanel({
         value={input}
         onChange={onInputChange}
         onSubmit={onSubmit}
-        disabled={!canSend || isGenerating}
+        disabled={!canSend || isGenerating || loadingMessages}
       />
     </main>
   );

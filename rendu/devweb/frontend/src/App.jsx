@@ -1,38 +1,23 @@
-import { useChat } from "./hooks/useChat";
-import { useHealth } from "./hooks/useHealth";
-import Sidebar from "./components/Sidebar";
-import ChatPanel from "./components/ChatPanel";
+import { Routes, Route, Navigate } from "react-router-dom";
+import ProtectedRoute from "./components/ProtectedRoute";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
+import Chat from "./pages/Chat";
 
 export default function App() {
-  const { health, loading, canSend, refresh } = useHealth();
-  const {
-    messages,
-    input,
-    setInput,
-    isGenerating,
-    activePrompt,
-    clearConversation,
-    selectPrompt,
-    submitMessage,
-  } = useChat({ canSend, onHealthRefresh: refresh });
-
   return (
-    <div className="app">
-      <Sidebar
-        health={health}
-        loading={loading}
-        activePrompt={activePrompt}
-        onClear={clearConversation}
-        onSelectPrompt={selectPrompt}
+    <Routes>
+      <Route path="/login" element={<Login />} />
+      <Route path="/register" element={<Register />} />
+      <Route
+        path="/"
+        element={
+          <ProtectedRoute>
+            <Chat />
+          </ProtectedRoute>
+        }
       />
-      <ChatPanel
-        messages={messages}
-        input={input}
-        onInputChange={setInput}
-        onSubmit={submitMessage}
-        canSend={canSend}
-        isGenerating={isGenerating}
-      />
-    </div>
+      <Route path="*" element={<Navigate to="/" replace />} />
+    </Routes>
   );
 }

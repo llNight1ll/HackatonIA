@@ -293,6 +293,20 @@ h4 {
   margin-top: 4px;
 }
 
+.field__error {
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--color-error);
+  margin: 0;
+}
+
+.field__success {
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--color-success-text);
+  margin: 0;
+}
+
 .input {
   width: 100%;
   min-height: 42px;
@@ -382,6 +396,33 @@ h4 {
 
 .btn--secondary:hover:not(:disabled) {
   background: var(--color-secondary-hover);
+}
+
+.btn--ghost {
+  background: transparent;
+  color: var(--color-slate-muted);
+  border: none;
+  padding: var(--space-sm);
+  font-size: 14px;
+  min-height: auto;
+}
+
+.btn--ghost:hover:not(:disabled) {
+  background: var(--color-ghost-hover);
+  color: var(--color-navy);
+}
+
+.btn--icon {
+  padding: var(--space-sm);
+  min-height: 32px;
+  min-width: 32px;
+}
+
+.btn--logout {
+  width: 100%;
+  justify-content: center;
+  min-height: 42px;
+  color: var(--color-slate-muted);
 }
 
 .btn--lg {
@@ -579,4 +620,181 @@ h4 {
   .message {
     max-width: 100%;
   }
+}
+
+/* Auth pages */
+
+.auth-page {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: var(--space-lg);
+  background: var(--color-bg);
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 420px;
+  padding: var(--space-2xl) var(--space-xl);
+}
+
+.auth-card__brand {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  margin-bottom: var(--space-xl);
+}
+
+.auth-card__title {
+  font-size: 24px;
+  font-weight: 600;
+  line-height: 1.25;
+  color: var(--color-navy);
+}
+
+.auth-card__subtitle {
+  margin: var(--space-xs) 0 0;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--color-slate);
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.auth-form__submit {
+  width: 100%;
+  margin-top: var(--space-sm);
+}
+
+.auth-card__footer {
+  margin: var(--space-lg) 0 0;
+  text-align: center;
+  font-size: 14px;
+  color: var(--color-slate);
+}
+
+.auth-link {
+  color: var(--color-sage);
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.auth-link:hover {
+  text-decoration: underline;
+}
+
+/* User card */
+
+.user-card {
+  padding: var(--space-md) var(--space-lg);
+}
+
+.user-card__name {
+  margin: 0;
+  font-family: var(--font-headline);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-navy);
+}
+
+.user-card__email {
+  margin: var(--space-xs) 0 0;
+  font-size: 12px;
+  color: var(--color-slate);
+}
+
+/* Conversations */
+
+.sidebar__section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-sm);
+}
+
+.conversation-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.conversation-list__empty {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--color-slate);
+  padding: var(--space-sm) 0;
+}
+
+.conversation-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: var(--space-sm) var(--space-md);
+  border-radius: var(--radius);
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.conversation-item:hover {
+  background: var(--color-ghost-hover);
+}
+
+.conversation-item--active {
+  background: var(--color-active-bg);
+  border-color: var(--color-border);
+}
+
+.conversation-item__body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.conversation-item__title {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-navy);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.conversation-item__date {
+  font-size: 11px;
+  color: var(--color-slate);
+}
+
+.conversation-item__delete {
+  opacity: 0;
+  flex-shrink: 0;
+}
+
+.conversation-item:hover .conversation-item__delete,
+.conversation-item--active .conversation-item__delete {
+  opacity: 1;
+}
+
+.sidebar__actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  margin-top: auto;
+}
+
+.messages__loading {
+  margin: 0;
+  text-align: center;
+  font-size: 14px;
+  color: var(--color-slate);
+  font-style: italic;
 }
