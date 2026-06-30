@@ -88,7 +88,8 @@ h4 {
 .app {
   display: grid;
   grid-template-columns: var(--sidebar-width) 1fr;
-  min-height: 100vh;
+  height: 100vh;
+  overflow: hidden;
 }
 
 /* Sidebar */
@@ -99,8 +100,19 @@ h4 {
   padding: var(--space-lg);
   display: flex;
   flex-direction: column;
-  gap: var(--space-lg);
-  min-height: 100vh;
+  gap: var(--space-md);
+  height: 100vh;
+  overflow: hidden;
+}
+
+.sidebar__scroll {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  padding-right: var(--space-xs);
 }
 
 .brand {
@@ -176,6 +188,10 @@ h4 {
 
 .status-card {
   padding: var(--space-md) var(--space-lg);
+}
+
+.status-card--compact {
+  padding: var(--space-md);
 }
 
 .status-card__header {
@@ -436,7 +452,9 @@ h4 {
 .chat-panel {
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
+  height: 100vh;
+  min-height: 0;
+  overflow: hidden;
   background: var(--color-bg);
 }
 
@@ -447,6 +465,7 @@ h4 {
   padding: var(--space-lg) var(--space-xl);
   background: var(--color-surface);
   border-bottom: 1px solid var(--color-border);
+  flex-shrink: 0;
 }
 
 .chat-header__icon {
@@ -479,11 +498,14 @@ h4 {
 
 .messages {
   flex: 1;
+  min-height: 0;
   overflow-y: auto;
+  overflow-x: hidden;
   padding: var(--space-xl);
   display: flex;
   flex-direction: column;
   gap: var(--space-lg);
+  scroll-behavior: smooth;
 }
 
 .message {
@@ -573,6 +595,7 @@ h4 {
   padding: var(--space-lg) var(--space-xl);
   background: var(--color-surface);
   border-top: 1px solid var(--color-border);
+  flex-shrink: 0;
 }
 
 .composer__field {
@@ -590,16 +613,32 @@ h4 {
 @media (max-width: 960px) {
   .app {
     grid-template-columns: 1fr;
+    height: auto;
+    min-height: 100vh;
+    overflow: visible;
+  }
+
+  .chat-panel {
+    height: auto;
+    min-height: 60vh;
+    overflow: visible;
+  }
+
+  .messages {
+    min-height: 50vh;
+    max-height: 60vh;
   }
 
   .sidebar {
-    min-height: auto;
+    height: auto;
+    max-height: none;
+    overflow: visible;
     border-right: none;
     border-bottom: 1px solid var(--color-border);
   }
 
-  .sidebar__section--grow {
-    flex: none;
+  .sidebar__scroll {
+    max-height: 280px;
   }
 
   .messages,
@@ -709,6 +748,90 @@ h4 {
 
 /* Conversations */
 
+.collapsible {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  background: var(--color-surface);
+  overflow: hidden;
+}
+
+.collapsible__header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+}
+
+.collapsible__trigger {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: var(--space-sm) var(--space-md);
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-family: var(--font-body);
+  text-align: left;
+  min-height: 40px;
+}
+
+.collapsible__trigger:hover {
+  background: var(--color-ghost-hover);
+}
+
+.collapsible__chevron {
+  flex-shrink: 0;
+  color: var(--color-slate);
+  transition: transform 0.2s ease;
+}
+
+.collapsible--open .collapsible__chevron {
+  transform: rotate(90deg);
+}
+
+.collapsible__title {
+  flex: 1;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-slate);
+}
+
+.collapsible__badge {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--color-navy);
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-full);
+  padding: 2px 8px;
+  min-width: 22px;
+  text-align: center;
+}
+
+.collapsible__header-action {
+  padding-right: var(--space-sm);
+}
+
+.collapsible__panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  padding: 0 var(--space-md) var(--space-md);
+}
+
+.collapsible__panel[hidden] {
+  display: none;
+}
+
+.conversation-select-field {
+  margin: 0;
+  flex-shrink: 0;
+}
+
 .sidebar__section-header {
   display: flex;
   align-items: center;
@@ -720,7 +843,7 @@ h4 {
   display: flex;
   flex-direction: column;
   gap: var(--space-xs);
-  max-height: 200px;
+  max-height: 140px;
   overflow-y: auto;
 }
 
@@ -788,7 +911,9 @@ h4 {
   display: flex;
   flex-direction: column;
   gap: var(--space-sm);
-  margin-top: auto;
+  flex-shrink: 0;
+  padding-top: var(--space-sm);
+  border-top: 1px solid var(--color-border);
 }
 
 .messages__loading {

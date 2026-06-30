@@ -1,5 +1,13 @@
-import { IconServer, IconModel, IconRefresh, IconLogOut, IconTrash, IconPlus } from "./Icons";
+import {
+  IconServer,
+  IconModel,
+  IconRefresh,
+  IconLogOut,
+  IconTrash,
+  IconPlus,
+} from "./Icons";
 import { SUGGESTED_PROMPTS } from "../constants/prompts";
+import CollapsibleSection from "./CollapsibleSection";
 
 function StatusChip({ health, loading }) {
   if (loading) {
@@ -52,137 +60,164 @@ export default function Sidebar({
         </div>
       </div>
 
-      {profile && (
-        <section className="card card--default user-card">
-          <p className="user-card__name">{profile.display_name || profile.email}</p>
-          <p className="user-card__email">{profile.email}</p>
-        </section>
-      )}
+      <div className="sidebar__scroll">
+        {profile && (
+          <section className="card card--default user-card">
+            <p className="user-card__name">{profile.display_name || profile.email}</p>
+            <p className="user-card__email">{profile.email}</p>
+          </section>
+        )}
 
-      <section className="card card--default status-card" aria-live="polite">
-        <div className="status-card__header">
-          <StatusChip health={health} loading={loading} />
-        </div>
-        <p className="status-card__detail">
-          {loading && "Connexion au serveur d'inférence en cours..."}
-          {!loading && health?.connected && health.model_ready !== false && (
-            <>
-              <IconServer size={16} />
-              <span>
-                {health.backend?.toUpperCase()} — {health.url}
-              </span>
-            </>
-          )}
-          {!loading && health?.connected && health.model_ready === false && (
-            <>Modèle « {health.model} » non chargé sur le serveur.</>
-          )}
-          {!loading && !health?.connected && (
-            <>{health?.error || "Serveur d'inférence indisponible."}</>
-          )}
-        </p>
-      </section>
-
-      <section className="sidebar__section">
-        <div className="sidebar__section-header">
-          <h2 className="sidebar__heading">Conversations</h2>
-          <button
-            type="button"
-            className="btn btn--ghost btn--icon"
-            onClick={onNewConversation}
-            aria-label="Nouvelle conversation"
-            title="Nouvelle conversation"
-          >
-            <IconPlus size={18} />
-          </button>
-        </div>
-
-        <div className="conversation-list" role="list">
-          {loadingConversations && (
-            <p className="conversation-list__empty">Chargement…</p>
-          )}
-          {!loadingConversations && conversations.length === 0 && (
-            <p className="conversation-list__empty">
-              Aucune conversation. Envoyez un message pour commencer.
-            </p>
-          )}
-          {!loadingConversations &&
-            conversations.map((conversation) => (
-              <div
-                key={conversation.id}
-                role="listitem"
-                className={`conversation-item${
-                  activeConversationId === conversation.id ? " conversation-item--active" : ""
-                }`}
-                onClick={() => onSelectConversation(conversation.id)}
-              >
-                <div className="conversation-item__body">
-                  <span className="conversation-item__title">{conversation.title}</span>
-                  <span className="conversation-item__date">
-                    {formatDate(conversation.updated_at)}
+        <CollapsibleSection title="Connexion" defaultOpen={false}>
+          <div className="card card--default status-card status-card--compact" aria-live="polite">
+            <div className="status-card__header">
+              <StatusChip health={health} loading={loading} />
+            </div>
+            <p className="status-card__detail">
+              {loading && "Connexion au serveur d'inférence en cours..."}
+              {!loading && health?.connected && health.model_ready !== false && (
+                <>
+                  <IconServer size={16} />
+                  <span>
+                    {health.backend?.toUpperCase()} — {health.url}
                   </span>
-                </div>
-                <button
-                  type="button"
-                  className="btn btn--ghost btn--icon conversation-item__delete"
-                  onClick={(e) => handleDelete(e, conversation.id)}
-                  aria-label="Supprimer la conversation"
-                >
-                  <IconTrash size={14} />
-                </button>
-              </div>
-            ))}
-        </div>
-      </section>
+                </>
+              )}
+              {!loading && health?.connected && health.model_ready === false && (
+                <>Modèle « {health.model} » non chargé sur le serveur.</>
+              )}
+              {!loading && !health?.connected && (
+                <>{health?.error || "Serveur d'inférence indisponible."}</>
+              )}
+            </p>
+          </div>
+        </CollapsibleSection>
 
-      <section className="sidebar__section">
-        <h2 className="sidebar__heading">Configuration</h2>
-
-        <label className="field">
-          <span className="field__label">
-            <IconServer size={16} />
-            Backend
-          </span>
-          <select
-            className="input"
-            value={health?.configured_backend || "ollama"}
-            disabled
-          >
-            <option value="ollama">Ollama (11434)</option>
-            <option value="triton">Triton (8000)</option>
-          </select>
-          <span className="field__helper">Défini dans le fichier .env</span>
-        </label>
-
-        <label className="field">
-          <span className="field__label">
-            <IconModel size={16} />
-            Modèle
-          </span>
-          <input
-            className="input input--mono"
-            type="text"
-            value={health?.model || "phi3.5-financial"}
-            readOnly
-          />
-        </label>
-      </section>
-
-      <section className="sidebar__section sidebar__section--grow">
-        <h2 className="sidebar__heading">Suggestions</h2>
-        <div className="chip-list" role="list">
-          {SUGGESTED_PROMPTS.map((prompt) => (
-            <button
-              key={prompt.label}
-              type="button"
-              role="listitem"
-              className={`chip chip--filter${activePrompt === prompt.label ? " chip--filter-active" : ""}`}
-              onClick={() => onSelectPrompt(prompt)}
+        {conversations.length > 0 && (
+          <label className="field conversation-select-field">
+            <span className="field__label">Conversation</span>
+            <select
+              className="input"
+              value={activeConversationId || ""}
+              onChange={(e) => {
+                const value = e.target.value;
+                if (value) onSelectConversation(value);
+                else onNewConversation();
+              }}
             >
-              {prompt.label}
+              <option value="">Nouvelle conversation</option>
+              {conversations.map((conversation) => (
+                <option key={conversation.id} value={conversation.id}>
+                  {conversation.title}
+                </option>
+              ))}
+            </select>
+          </label>
+        )}
+
+        <CollapsibleSection
+          title="Historique"
+          badge={conversations.length || null}
+          defaultOpen={false}
+          headerAction={
+            <button
+              type="button"
+              className="btn btn--ghost btn--icon"
+              onClick={onNewConversation}
+              aria-label="Nouvelle conversation"
+              title="Nouvelle conversation"
+            >
+              <IconPlus size={18} />
             </button>
-          ))}
-        </div>
-      </section>
+          }
+        >
+          <div className="conversation-list" role="list">
+            {loadingConversations && (
+              <p className="conversation-list__empty">Chargement...</p>
+            )}
+            {!loadingConversations && conversations.length === 0 && (
+              <p className="conversation-list__empty">
+                Aucune conversation. Envoyez un message pour commencer.
+              </p>
+            )}
+            {!loadingConversations &&
+              conversations.map((conversation) => (
+                <div
+                  key={conversation.id}
+                  role="listitem"
+                  className={`conversation-item${
+                    activeConversationId === conversation.id
+                      ? " conversation-item--active"
+                      : ""
+                  }`}
+                  onClick={() => onSelectConversation(conversation.id)}
+                >
+                  <div className="conversation-item__body">
+                    <span className="conversation-item__title">{conversation.title}</span>
+                    <span className="conversation-item__date">
+                      {formatDate(conversation.updated_at)}
+                    </span>
+                  </div>
+                  <button
+                    type="button"
+                    className="btn btn--ghost btn--icon conversation-item__delete"
+                    onClick={(e) => handleDelete(e, conversation.id)}
+                    aria-label="Supprimer la conversation"
+                  >
+                    <IconTrash size={14} />
+                  </button>
+                </div>
+              ))}
+          </div>
+        </CollapsibleSection>
+
+        <CollapsibleSection title="Configuration">
+          <label className="field">
+            <span className="field__label">
+              <IconServer size={16} />
+              Backend
+            </span>
+            <select
+              className="input"
+              value={health?.configured_backend || "ollama"}
+              disabled
+            >
+              <option value="ollama">Ollama (11434)</option>
+              <option value="triton">Triton (8000)</option>
+            </select>
+            <span className="field__helper">Défini dans le fichier .env</span>
+          </label>
+
+          <label className="field">
+            <span className="field__label">
+              <IconModel size={16} />
+              Modèle
+            </span>
+            <input
+              className="input input--mono"
+              type="text"
+              value={health?.model || "phi3.5-financial"}
+              readOnly
+            />
+          </label>
+        </CollapsibleSection>
+
+        <CollapsibleSection title="Suggestions">
+          <div className="chip-list" role="list">
+            {SUGGESTED_PROMPTS.map((prompt) => (
+              <button
+                key={prompt.label}
+                type="button"
+                role="listitem"
+                className={`chip chip--filter${activePrompt === prompt.label ? " chip--filter-active" : ""}`}
+                onClick={() => onSelectPrompt(prompt)}
+              >
+                {prompt.label}
+              </button>
+            ))}
+          </div>
+        </CollapsibleSection>
+      </div>
 
       <div className="sidebar__actions">
         <button type="button" className="btn btn--secondary" onClick={onNewConversation}>
