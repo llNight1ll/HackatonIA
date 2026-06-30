@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TechCorp AI — Assistant Financier</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-icon">TC</div>
+        <div>
+          <h1>TechCorp AI</h1>
+          <p>Phi-3.5-Financial</p>
+        </div>
+      </div>
+
+      <div class="status-card" id="statusCard">
+        <div class="status-row">
+          <span class="status-dot" id="statusDot"></span>
+          <span id="statusLabel">Vérification...</span>
+        </div>
+        <p class="status-detail" id="statusDetail">Connexion au serveur d'inférence</p>
+      </div>
+
+      <div class="sidebar-section">
+        <h2>Paramètres</h2>
+        <label class="field">
+          <span>Backend</span>
+          <select id="backendSelect" disabled>
+            <option value="ollama">Ollama (11434)</option>
+            <option value="triton">Triton (8000)</option>
+          </select>
+        </label>
+        <label class="field">
+          <span>Modèle</span>
+          <input type="text" id="modelName" readonly>
+        </label>
+      </div>
+
+      <div class="sidebar-section">
+        <h2>Suggestions</h2>
+        <button class="prompt-chip" data-prompt="Explique-moi la diversification de portefeuille pour un analyste junior.">
+          Diversification de portefeuille
+        </button>
+        <button class="prompt-chip" data-prompt="Quels indicateurs surveiller pour évaluer la santé financière d'une entreprise ?">
+          Indicateurs financiers clés
+        </button>
+        <button class="prompt-chip" data-prompt="Comment fonctionne un ETF et quels sont ses avantages ?">
+          Comprendre les ETF
+        </button>
+      </div>
+
+      <button class="btn-secondary" id="clearBtn">Nouvelle conversation</button>
+    </aside>
+
+    <main class="chat-panel">
+      <header class="chat-header">
+        <div>
+          <h2>Assistant Financier</h2>
+          <p>Posez vos questions sur la finance, l'investissement et l'analyse économique.</p>
+        </div>
+      </header>
+
+      <section class="messages" id="messages">
+        <article class="message assistant welcome">
+          <div class="avatar">AI</div>
+          <div class="bubble">
+            <p>Bonjour, je suis l'assistant financier TechCorp basé sur <strong>Phi-3.5-Financial</strong>.</p>
+            <p>Je peux vous aider sur l'analyse financière, les marchés, la gestion de budget et les concepts économiques.</p>
+          </div>
+        </article>
+      </section>
+
+      <form class="composer" id="chatForm">
+        <textarea
+          id="messageInput"
+          rows="1"
+          placeholder="Écrivez votre message..."
+          autocomplete="off"
+        ></textarea>
+        <button type="submit" class="btn-primary" id="sendBtn">
+          Envoyer
+        </button>
+      </form>
+    </main>
+  </div>
+
+  <script src="/static/js/chat.js"></script>
+</body>
+</html>
