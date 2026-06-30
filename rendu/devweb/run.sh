@@ -3,13 +3,18 @@ set -euo pipefail
 
 cd "$(dirname "$0")"
 
-if [ ! -d ".venv" ]; then
+if [ ! -x ".venv/bin/python" ]; then
+  if [ -d ".venv" ]; then
+    echo "Environnement virtuel incomplet, recréation..."
+    rm -rf ".venv"
+  fi
   echo "Création de l'environnement virtuel Python..."
   python3 -m venv .venv
 fi
 
 source .venv/bin/activate
-pip install -r requirements.txt -q
+python -m pip install --upgrade pip -q
+python -m pip install -r requirements.txt -q
 
 if [ ! -f ".env" ]; then
   cp .env.example .env

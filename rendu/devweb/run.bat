@@ -3,13 +3,23 @@ setlocal
 
 cd /d "%~dp0"
 
-if not exist ".venv" (
+if not exist ".venv\Scripts\python.exe" (
+  if exist ".venv" (
+    echo Environnement virtuel incomplet, recreation...
+    rmdir /s /q ".venv"
+  )
   echo Creation de l'environnement virtuel Python...
   python -m venv .venv
 )
 
+if not exist ".venv\Scripts\python.exe" (
+  echo Echec de creation de .venv
+  exit /b 1
+)
+
 call .venv\Scripts\activate.bat
-pip install -r requirements.txt -q
+python -m pip install --upgrade pip -q
+python -m pip install -r requirements.txt -q
 
 if not exist ".env" (
   copy .env.example .env >nul
@@ -28,4 +38,4 @@ echo TechCorp AI Chat demarre sur http://localhost:8080
 echo Backend configure : voir fichier .env
 echo.
 
-python -m app.main
+.venv\Scripts\python.exe -m app.main

@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react";
 import MessageBubble from "./MessageBubble";
 import Composer from "./Composer";
+import { IconSpark } from "./Icons";
 
 export default function ChatPanel({
   messages,
@@ -21,16 +22,19 @@ export default function ChatPanel({
   return (
     <main className="chat-panel">
       <header className="chat-header">
+        <div className="chat-header__icon" aria-hidden="true">
+          <IconSpark />
+        </div>
         <div>
-          <h2>Assistant Financier</h2>
-          <p>
+          <h2 className="chat-header__title">Assistant Financier</h2>
+          <p className="chat-header__subtitle">
             Posez vos questions sur la finance, l'investissement et l'analyse
             économique.
           </p>
         </div>
       </header>
 
-      <section className="messages" ref={messagesRef}>
+      <section className="messages" ref={messagesRef} aria-label="Conversation">
         {messages.map((message, index) => (
           <MessageBubble
             key={index}
