@@ -91,3 +91,6 @@ huggingface/
 
 # --- Artefacts Docker locaux ---
 *.tar
+
+datasets/*.json
+datasets/*.jsonl
