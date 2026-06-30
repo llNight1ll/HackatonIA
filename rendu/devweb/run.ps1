@@ -4,7 +4,7 @@ $python = ".\.venv\Scripts\python.exe"
 $pip = ".\.venv\Scripts\pip.exe"
 
 if (-not (Test-Path ".venv")) {
-    Write-Host "Creation de l'environnement virtuel..."
+    Write-Host "Creation de l'environnement virtuel Python..."
     python -m venv .venv
 }
 
@@ -13,6 +13,14 @@ if (-not (Test-Path ".venv")) {
 if (-not (Test-Path ".env")) {
     Copy-Item .env.example .env
 }
+
+Write-Host "Build du frontend React..."
+Set-Location frontend
+if (-not (Test-Path "node_modules")) {
+    npm install
+}
+npm run build
+Set-Location ..
 
 Write-Host ""
 Write-Host "TechCorp AI Chat demarre sur http://localhost:8080"

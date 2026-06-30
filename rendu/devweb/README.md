@@ -1,102 +1,77 @@
-# TechCorp AI Chat — Livrable DEV WEB
+# TechCorp AI Chat — Livrable DEV WEB (React)
 
-Interface web de chat pour interagir avec le modèle **Phi-3.5-Financial** via le serveur d'inférence déployé par l'équipe INFRA.
+Interface web de chat **React + Vite** pour interagir avec le modèle **Phi-3.5-Financial** via le serveur d'inférence déployé par l'équipe INFRA.
 
 ## Fonctionnalités
 
-- Interface chat professionnelle (historique de conversation)
+- Interface React avec composants modulaires
+- Historique de conversation
 - Streaming temps réel des réponses (Ollama)
-- Indicateur de connexion au serveur d'inférence (connecté / déconnecté)
-- Support multi-backend : **Ollama** (défaut) et **Triton**
-- Suggestions de prompts financiers
+- Indicateur connecté / déconnecté
+- Support Ollama et Triton
 - Lancement en une commande
 
 ## Prérequis
 
 - Python 3.10+
-- Serveur d'inférence opérationnel (équipe INFRA) :
-  - **Ollama** : `http://localhost:11434`
-  - **Triton** : `http://localhost:8000`
+- Node.js 18+
+- Serveur d'inférence (équipe INFRA) sur `http://localhost:11434` (Ollama)
 
-## Lancement rapide
-
-### Windows (PowerShell)
+## Lancement production (1 commande)
 
 ```powershell
 cd rendu/devweb
 .\run.ps1
 ```
 
-### Linux / macOS
+Ouvre **http://localhost:8080**
 
-```bash
+## Mode développement (hot reload React)
+
+```powershell
 cd rendu/devweb
-chmod +x run.sh
-./run.sh
+.\run-dev.ps1
 ```
 
-Puis ouvrir : **http://localhost:8080**
+- Backend API : http://localhost:8080
+- Frontend React : http://localhost:5173 (proxy `/api` vers le backend)
+
+## Structure
+
+```
+rendu/devweb/
+├── app/                    # Backend FastAPI
+│   ├── main.py
+│   ├── config.py
+│   └── backends/
+├── frontend/               # Interface React
+│   ├── src/
+│   │   ├── App.jsx
+│   │   ├── components/
+│   │   ├── hooks/
+│   │   └── api/
+│   └── package.json
+├── run.ps1 / run.bat       # Build + lancement
+└── run-dev.ps1             # Dev avec hot reload
+```
 
 ## Configuration
 
-Copier `.env.example` vers `.env` et adapter selon le choix INFRA :
+Voir `.env.example` :
 
 | Variable | Défaut | Description |
 |----------|--------|-------------|
 | `BACKEND` | `ollama` | `ollama` ou `triton` |
 | `OLLAMA_URL` | `http://localhost:11434` | URL Ollama |
-| `OLLAMA_MODEL` | `phi3.5-financial` | Nom du modèle Ollama |
-| `TRITON_URL` | `http://localhost:8000` | URL Triton |
-| `TRITON_MODEL` | `phi35_financial` | Nom du modèle Triton |
-| `PORT` | `8080` | Port de l'interface web |
+| `OLLAMA_MODEL` | `phi3.5-financial` | Nom du modèle |
+| `PORT` | `8080` | Port du backend |
 
-## Architecture
+## Build manuel du frontend
 
-```
-rendu/devweb/
-├── app/
-│   ├── main.py              # API FastAPI + serveur statique
-│   ├── config.py            # Configuration (.env)
-│   ├── backends/
-│   │   ├── ollama.py        # Client API Ollama (streaming)
-│   │   └── triton.py        # Client API Triton
-│   └── static/
-│       ├── index.html       # Interface utilisateur
-│       ├── css/style.css
-│       └── js/chat.js
-├── run.ps1 / run.sh         # Lancement en 1 commande
-└── requirements.txt
+```powershell
+cd frontend
+npm install
+npm run build
 ```
 
-## Endpoints API
-
-| Méthode | Route | Description |
-|---------|-------|-------------|
-| `GET` | `/` | Interface web |
-| `GET` | `/api/health` | État de connexion au serveur d'inférence |
-| `POST` | `/api/chat` | Envoi de messages (streaming ou JSON) |
-
-## Intégration INFRA
-
-### Ollama (recommandé)
-
-L'équipe INFRA doit créer le modèle depuis `ollama_server/Modelfile` :
-
-```bash
-ollama create phi3.5-financial -f ollama_server/Modelfile
-ollama serve
-```
-
-### Triton
-
-Configurer `.env` :
-
-```
-BACKEND=triton
-TRITON_URL=http://localhost:8000
-TRITON_MODEL=phi35_financial
-```
-
-## Notes sécurité
-
-Cette interface **ne contient aucune backdoor** et transmet les messages directement au serveur d'inférence. L'équipe CYBER peut auditer le code dans `app/` — aucune logique cachée de type trigger ou encodage de données sensibles.
+Le build est servi par FastAPI depuis `frontend/dist/`.

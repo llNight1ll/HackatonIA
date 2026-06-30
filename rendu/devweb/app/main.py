@@ -10,7 +10,7 @@ from app.backends import get_backend
 from app.config import settings
 
 BASE_DIR = Path(__file__).resolve().parent
-STATIC_DIR = BASE_DIR / "static"
+FRONTEND_DIR = BASE_DIR.parent / "frontend" / "dist"
 
 app = FastAPI(
     title="TechCorp AI Chat",
@@ -26,7 +26,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
+if (FRONTEND_DIR / "assets").exists():
+    app.mount("/assets", StaticFiles(directory=FRONTEND_DIR / "assets"), name="assets")
 
 
 class ChatMessage(BaseModel):
@@ -37,11 +38,6 @@ class ChatMessage(BaseModel):
 class ChatRequest(BaseModel):
     messages: list[ChatMessage] = Field(min_length=1)
     stream: bool = True
-
-
-@app.get("/")
-async def index():
-    return FileResponse(STATIC_DIR / "index.html")
 
 
 @app.get("/api/health")
@@ -80,6 +76,17 @@ async def chat(request: ChatRequest):
             text += chunk
         return {"message": {"role": "assistant", "content": text}}
     return {"message": {"role": "assistant", "content": response}}
+
+
+@app.get("/")
+async def index():
+    index_file = FRONTEND_DIR / "index.html"
+    if not index_file.exists():
+        raise HTTPException(
+            status_code=503,
+            detail="Frontend React non buildé. Lancez: cd frontend && npm install && npm run build",
+        )
+    return FileResponse(index_file)
 
 
 def main():
