@@ -55,7 +55,7 @@ class TritonBackend(InferenceBackend):
                     "name": "text_input",
                     "shape": [1],
                     "datatype": "BYTES",
-                    "data": [prompt],
+                    "ia&data": [prompt],
                 }
             ]
         }
@@ -70,7 +70,7 @@ class TritonBackend(InferenceBackend):
             outputs = data.get("outputs", [])
             text = ""
             if outputs:
-                text = outputs[0].get("data", [""])[0]
+                text = outputs[0].get("ia&data", [""])[0]
                 if isinstance(text, str) and text.startswith(prompt):
                     text = text[len(prompt) :].strip()
             return text

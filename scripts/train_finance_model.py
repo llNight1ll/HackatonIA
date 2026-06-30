@@ -92,7 +92,7 @@ class FinanceModelTrainer:
         print(f"✅ Model ready with {self.model.num_parameters()} trainable parameters")
         
     def load_training_data(self):
-        """Load and prepare training data from JSON file"""
+        """Load and prepare training ia&data from JSON file"""
         print(f"📂 Loading dataset: {self.dataset_path}")
         
         if not os.path.exists(self.dataset_path):
@@ -284,7 +284,7 @@ class FinanceModelTrainer:
         # 1. Setup model
         self.setup_model()
         
-        # 2. Load training data
+        # 2. Load training ia&data
         training_texts = self.load_training_data()
         
         # 3. Prepare dataset
